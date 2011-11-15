@@ -41,17 +41,17 @@ public class RunRescripterHandlerTest {
 			oneOf(document).get(); will(returnValue(contents));
 			oneOf(editor).getTitle(); will(returnValue(filename));
 			
-			oneOf(runScript).withContents(contents, file, filename);
+			oneOf(runScript).withContents(contents, file);
 		}});
 		
 		RunRescripterHandler handler = new RunRescripterHandler() {
-			@Override protected IWorkbenchWindow getWindow(ExecutionEvent event) throws ExecutionException {
+			@Override protected IWorkbenchWindow getWindow(ExecutionEvent evnt) {
 				return window;
 			}
 			@Override protected ITextEditor getEditor() {
 				return editor;
 			}
-			@Override protected RunScript createRunScript(IWorkbenchWindow window) {
+			@Override protected RunScript createRunScript(IWorkbenchWindow win) {
 				return runScript;
 			}
 		};

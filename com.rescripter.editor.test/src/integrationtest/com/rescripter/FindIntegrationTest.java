@@ -17,32 +17,32 @@ public class FindIntegrationTest extends BaseRescripterIntegrationTest {
 	@Test public void
 	finds_types_by_name() throws IOException, CoreException {
 		RunScript runScript = new RunScript(getWindow());
-		runScript.withContents("var person = Find.typeByName('Person');\n", null, "inline script");
+		runScript.withContents("var person = Find.typeByName('Person');\n", null);
 		IType type = runScript.getProperty(IType.class, "person");
 		assertThat(type, is(notNullValue()));
 		assertThat(type, is(getJavaProject().findType("com.example.Person")));
 	}
-	
+
 	@Test(expected=Exception.class) public void
-	fails_to_find_missing_type_by_name() throws IOException, CoreException {
+	fails_to_find_missing_type_by_name() throws IOException {
 		RunScript runScript = new RunScript(getWindow());
-		runScript.withContents("var person = Find.typeByName('NotAPerson');\n", null, "inline script");
+		runScript.withContents("var person = Find.typeByName('NotAPerson');\n", null);
 	}
 
 	@Test public void
-	finds_method_by_name() throws IOException, CoreException {
+	finds_method_by_name() throws IOException {
 		RunScript runScript = new RunScript(getWindow());
 		runScript.withContents(
 				"var person = Find.typeByName('Person');\n" +
-				"var getName = Find.methodByName(person, 'getName');\n", null, "inline script");
+				"var getName = Find.methodByName(person, 'getName');\n", null);
 		assertThat(runScript.getProperty(IMethod.class, "getName"), is(notNullValue()));
 	}
 
 	@Test(expected=Exception.class) public void
-	fails_to_find_missing_method_by_name() throws IOException, CoreException {
+	fails_to_find_missing_method_by_name() throws IOException {
 		RunScript runScript = new RunScript(getWindow());
 		runScript.withContents(
 				"var person = Find.typeByName('Person');\n" +
-				"var getName = Find.methodByName(person, 'noSuchGetName');\n", null, "inline script");
+				"var getName = Find.methodByName(person, 'noSuchGetName');\n", null);
 	}
 }

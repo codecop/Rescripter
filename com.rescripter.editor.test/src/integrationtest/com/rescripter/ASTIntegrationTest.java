@@ -21,16 +21,16 @@ import org.junit.Test;
 import com.rescripter.script.RunScript;
 
 public class ASTIntegrationTest extends BaseRescripterIntegrationTest {
-	
+
 	@Test public void
-	parses_compilation_unit() throws IOException, CoreException {
+	parses_compilation_unit() throws IOException {
 		RunScript runScript = new RunScript(getWindow());
 		runScript.withContents(
-		    "var person = Find.typeByName('Person');\n" + 
-		    "var ast = AST.parseCompilationUnit(person.getCompilationUnit());\n", null, "inline script");
-		
+		    "var person = Find.typeByName('Person');\n" +
+		    "var ast = AST.parseCompilationUnit(person.getCompilationUnit());\n", null);
+
 		ASTNode ast = runScript.getProperty(ASTNode.class, "ast");
-		
+
 		assertThat(ast, is(notNullValue()));
 		assertThat(ast.toString(), containsString("public class Person"));
 		assertThat(ast.toString(), containsString("public Person("));
@@ -45,31 +45,31 @@ public class ASTIntegrationTest extends BaseRescripterIntegrationTest {
 		String personSource = personType.getCompilationUnit().getSource();
 		int offsetOfCall = personSource.indexOf(methodCallText);
 		runScript.withContents(
-		    "var person = Find.typeByName('Person');\n" + 
+		    "var person = Find.typeByName('Person');\n" +
 		    "var ast = AST.parseCompilationUnit(person.getCompilationUnit());\n" +
 		    "var node = AST.findCoveredNode(ast, " + offsetOfCall + ", " + methodCallText.length() + ");\n"
-		    , null, "inline script");
+		    , null);
 
 		MethodInvocation node = runScript.getProperty(MethodInvocation.class, "node");
-		
+
 		assertThat(node, is(notNullValue()));
 		assertThat(node.getExpression().toString(), is("person"));
 		assertThat(node.getName().toString(), is("setName"));
-		assertThat((List<ASTNode>) node.arguments(), 
+		assertThat((List<ASTNode>) node.arguments(),
 				   Matchers.<ASTNode>hasItems(a_node().with_text_representation("\"Bob\"")));
 	}
-	
+
 	public static final class ASTNodeMatcher extends TypeSafeDiagnosingMatcher<ASTNode> {
 		public static final ASTNodeMatcher a_node() {
 			return new ASTNodeMatcher();
 		}
 
 		private String text;
-		
+
 		private ASTNodeMatcher() { }
-		
-		public ASTNodeMatcher with_text_representation(String text) {
-			this.text = text;
+
+		public ASTNodeMatcher with_text_representation(String matchText) {
+			this.text = matchText;
 			return this;
 		}
 
