@@ -2,7 +2,6 @@ package com.rescripter.script;
 
 import java.io.IOException;
 
-import org.eclipse.core.runtime.CoreException;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.Sequence;
@@ -15,7 +14,7 @@ public class ScriptStackTest {
 	private Mockery context = new Mockery();
 	
 	@Test public void
-	delegates_to_pushed_loader() throws IOException, CoreException {
+	delegates_to_pushed_loader() throws IOException {
 		ScriptStack stack = new ScriptStack();
 		final ScriptLoader loader = context.mock(ScriptLoader.class);
 		final String filename = "foo.rs";
@@ -31,7 +30,7 @@ public class ScriptStackTest {
 	}
 	
 	@Test public void
-	pushes_and_pops_loaders() throws IOException, CoreException {
+	pushes_and_pops_loaders() throws IOException {
 		ScriptStack stack = new ScriptStack();
 		final ScriptLoader loader1 = context.mock(ScriptLoader.class, "loader1");
 		final ScriptLoader loader2 = context.mock(ScriptLoader.class, "loader2");

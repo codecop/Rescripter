@@ -17,17 +17,18 @@ public class WorkspaceScriptLoader implements ScriptLoader {
     private final ScriptStack scriptStack;
     private final FileContentsReader fileReader;
 
-    public WorkspaceScriptLoader(IFile location, 
-    							 ScriptRunner scriptRunner, 
+    public WorkspaceScriptLoader(IFile location,
+    							 ScriptRunner scriptRunner,
     							 ScriptStack scriptStack,
     							 FileContentsReader fileReader) {
     	this.location = location;
-        this.scriptRunner = scriptRunner;
+      this.scriptRunner = scriptRunner;
 		this.scriptStack = scriptStack;
 		this.fileReader = fileReader;
     }
-    
-    public void file(String filename) throws IOException, CoreException {
+
+    public void file(String filename) throws IOException {
+      try {
         IContainer container = location.getParent();
         IFile file = container.getFile(new Path(filename.trim()));
         if (!file.exists()) {
@@ -35,16 +36,22 @@ public class WorkspaceScriptLoader implements ScriptLoader {
         }
 
         String contents = fileReader.getContents(file.getContents());
-        
+
         scriptStack.push(new WorkspaceScriptLoader(file, scriptRunner, scriptStack, fileReader));
-        scriptRunner.run(contents, file.getFullPath().toPortableString());
+        scriptRunner.run(contents);
         scriptStack.pop();
+      } catch (CoreException e) {
+         IOException wrapped = new IOException(e.getMessage());
+         wrapped.initCause(e);
+         throw wrapped;
+      }
     }
 
 	public IFile getCurrentLocation() {
 		return location;
 	}
 
+	@Override
 	public String toString() {
 		return "a workspace script loader";
 	}

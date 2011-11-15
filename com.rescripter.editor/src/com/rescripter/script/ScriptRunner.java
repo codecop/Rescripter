@@ -2,7 +2,6 @@ package com.rescripter.script;
 
 import java.io.IOException;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.mozilla.javascript.Context;
@@ -24,7 +23,7 @@ public class ScriptRunner {
 
     public ScriptRunner(IWorkbenchWindow window,
     					ScriptStack scriptStack,
-    					FileContentsReader fileReader) throws IOException, CoreException {
+    					FileContentsReader fileReader) throws IOException {
         this.scriptStack = scriptStack;
 		this.fileReader = fileReader;
 		this.context = createContext();
@@ -46,23 +45,23 @@ public class ScriptRunner {
     	return Context.enter();
     }
 
-    public void run(String source, String sourceName) {
-        context.evaluateString(scope, source, sourceName, 1, null);
+    public void run(String source) {
+        context.evaluateString(scope, source, "script", 1, null);
     }
 
-    public void putProperty(String name, Object object) {
-        ScriptableObject.putProperty(scope, name, object);
-    }
-    
-    public Object getProperty(String name) {
-    	return ScriptableObject.getProperty(scope, name);
+   public void putProperty(String name, Object object) {
+      ScriptableObject.putProperty(scope, name, object);
+   }
+
+   public Object getProperty(String name) {
+      return ScriptableObject.getProperty(scope, name);
     }
 
-    private void includeSystem() throws IOException, CoreException {
-    	ClasspathScriptLoader loader = new ClasspathScriptLoader(this, scriptStack, fileReader);
-    	loader.file("System.rs");
-    }
-
+   private void includeSystem() throws IOException {
+     ClasspathScriptLoader loader = new ClasspathScriptLoader(this, scriptStack, fileReader);
+     loader.file("System.rs");
+   }
+   
 	public void done() {
 		if (debugMessage != null) {
 			debugMessage.done();

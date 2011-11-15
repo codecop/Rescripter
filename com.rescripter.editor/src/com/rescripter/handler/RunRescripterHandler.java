@@ -6,7 +6,6 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
@@ -28,12 +27,12 @@ public class RunRescripterHandler extends AbstractHandler {
 			ITextEditor editor = getEditor();
 			IEditorInput editorInput = editor.getEditorInput();
             IDocument document = editor.getDocumentProvider().getDocument(editorInput);
-            
+
             IFileEditorInput fileEditorInput = (IFileEditorInput) editorInput;
             IFile file = fileEditorInput.getFile();
-            
-            createRunScript(window).withContents(document.get(), file, editor.getTitle());
-			
+
+            createRunScript(window).withContents(document.get(), file);
+
 			return null;
 		} catch (Throwable t) {
 			t.printStackTrace();
@@ -42,7 +41,7 @@ public class RunRescripterHandler extends AbstractHandler {
 		}
 	}
 
-	protected RunScript createRunScript(IWorkbenchWindow window) throws IOException, CoreException {
+	protected RunScript createRunScript(IWorkbenchWindow window) throws IOException {
 		return new RunScript(window);
 	}
 

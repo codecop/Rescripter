@@ -5,7 +5,6 @@ import static com.rescripter.test.matchers.WorkspaceScriptLoaderMatcher.a_loader
 import java.io.IOException;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.jmock.Expectations;
@@ -18,21 +17,20 @@ public class RunScriptTest {
 	private Mockery context = new Mockery() {{ setImposteriser(ClassImposteriser.INSTANCE); }};
 	
 	@Test public void
-	runs_script() throws IOException, CoreException {
+	runs_script() throws IOException {
 		final IWorkbenchWindow window = context.mock(IWorkbenchWindow.class);
 		final IFile file = context.mock(IFile.class);
 		final ScriptRunner scriptRunner = context.mock(ScriptRunner.class);
 		final ScriptStack scriptStack = context.mock(ScriptStack.class);
 		
 		final String contents = "contents";
-		final String filename = "filename";
 		final Path fullPath = new Path("full path");
 		
 		context.checking(new Expectations() {{
 			allowing(file).getFullPath(); will(returnValue(fullPath));
 			
 			oneOf(scriptStack).push(with(a_loader_relative_to(fullPath.toPortableString())));
-			oneOf(scriptRunner).run(contents, filename);
+			oneOf(scriptRunner).run(contents);
 			oneOf(scriptStack).pop();
 			oneOf(scriptRunner).done();
 		}});
@@ -41,7 +39,7 @@ public class RunScriptTest {
 		runScript.setScriptRunner(scriptRunner);
 		runScript.setScriptStack(scriptStack);
 		
-		runScript.withContents(contents, file, filename);
+		runScript.withContents(contents, file);
 		
 		context.assertIsSatisfied();
 	}

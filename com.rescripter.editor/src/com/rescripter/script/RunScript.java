@@ -3,7 +3,6 @@ package com.rescripter.script;
 import java.io.IOException;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.mozilla.javascript.NativeJavaObject;
 
@@ -16,15 +15,15 @@ public class RunScript {
 	private final FileContentsReader fileReader = new FileContentsReader();
 	private ScriptRunner runner;
 	
-	public RunScript(IWorkbenchWindow window) throws IOException, CoreException {
+	public RunScript(IWorkbenchWindow window) throws IOException {
 		this.runner = new ScriptRunner(window, scriptStack, fileReader);
 	}
 	
-	public void withContents(String contents, IFile file, String filename) {
+	public void withContents(String contents, IFile file) {
 		try {
 	    	WorkspaceScriptLoader loader = new WorkspaceScriptLoader(file, runner, scriptStack, fileReader);
 			scriptStack.push(loader);
-			runner.run(contents, filename);
+			runner.run(contents);
 			scriptStack.pop();
 		} finally {
 			runner.done();
@@ -35,10 +34,9 @@ public class RunScript {
 		return runner.getProperty(name);
 	}
 	
-	@SuppressWarnings("unchecked")
-	public <T> T getProperty(Class<T> clazz, String name) {
-		return (T) ((NativeJavaObject) getProperty(name)).unwrap();
-	}
+   public <T> T getProperty(Class<T> clazz, String name) {
+      return clazz.cast(((NativeJavaObject) getProperty(name)).unwrap());
+   }
 	
 	public Integer getIntegerProperty(String name) {
 		return (Integer) getProperty(name);
