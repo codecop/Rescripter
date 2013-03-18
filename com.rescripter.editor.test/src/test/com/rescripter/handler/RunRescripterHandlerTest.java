@@ -31,7 +31,6 @@ public class RunRescripterHandlerTest {
 		
 		ExecutionEvent event = new ExecutionEvent();
 		final String contents = "contents";
-		final String filename = "filename";
 		
 		context.checking(new Expectations() {{
 			oneOf(editor).getEditorInput(); will(returnValue(editorInput));
@@ -39,7 +38,6 @@ public class RunRescripterHandlerTest {
 			oneOf(documentProvider).getDocument(with(editorInput)); will(returnValue(document));
 			oneOf(editorInput).getFile(); will(returnValue(file));
 			oneOf(document).get(); will(returnValue(contents));
-			oneOf(editor).getTitle(); will(returnValue(filename));
 			
 			oneOf(runScript).withContents(contents, file);
 		}});
