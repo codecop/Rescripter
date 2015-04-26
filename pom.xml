@@ -17,11 +17,6 @@
         <maven>3.0</maven>
     </prerequisites>
 
-    <ciManagement>
-        <system>Jenkins</system>
-        <url>https://codecop.ci.cloudbees.com/job/${project.artifactId}/</url>
-    </ciManagement>
-
     <inceptionYear>2011</inceptionYear>
 
     <developers>
